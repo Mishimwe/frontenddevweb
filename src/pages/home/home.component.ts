@@ -1,14 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import {ActivatedRoute, Params, Router, RouterLink} from '@angular/router';
 
 import {TacheService} from "../../app/services/tache.service";
 import {Tache} from "../../app/models/tache.model";
+import {NgClass, NgIf} from "@angular/common";
 
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   standalone: true,
+  imports: [
+    RouterLink,
+    NgClass,
+    NgIf
+  ],
   styleUrls: ['./home.component.css']
 })
 
