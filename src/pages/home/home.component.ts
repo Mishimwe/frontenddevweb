@@ -79,6 +79,7 @@ export class HomeComponent implements OnInit {
   }
 
   // Gestionnaire de clic pour supprimer une tâche
+  myDropdown: any;
   onDeleteTaskClick(tacheId: number) {
     this.tacheService.deleteTache(this.selectedListId, tacheId).subscribe((res: any) => {
       // Filtrez la tâche supprimée du tableau de tâches
