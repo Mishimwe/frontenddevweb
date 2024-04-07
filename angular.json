@@ -6,6 +6,7 @@
     "gestionnaire": {
       "projectType": "application",
       "schematics": {},
+
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -55,12 +56,17 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "src/proxy.conf.json"
+          },
           "configurations": {
             "production": {
-              "buildTarget": "gestionnaire:build:production"
+              "buildTarget": "gestionnaire:build:production",
+              "proxyConfig": "proxy.conf.json"
             },
             "development": {
-              "buildTarget": "gestionnaire:build:development"
+              "buildTarget": "gestionnaire:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
