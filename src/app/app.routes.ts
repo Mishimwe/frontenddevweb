@@ -12,6 +12,7 @@ export const routes: Routes = [
   { path: 'edit-list/:listeId', component: EditListComponent },
   { path: 'liste/:listeId/edit-task/:tacheId', component: EditTacheComponent },
   { path: 'home', component: HomeComponent },
+  { path: 'home/nouvelles-tache', component: NouvellesTacheComponent  },
   { path: 'liste/:listeId', component: HomeComponent },
-  { path: 'liste/:listeId/new-task', component: NouvellesTacheComponent },
+  { path: 'liste/:listeId/nouvelles-tache', component: NouvellesTacheComponent },
 ];

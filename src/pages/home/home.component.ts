@@ -1,91 +1,76 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Params, Router, RouterLink} from '@angular/router';
-
-import {TacheService} from "../../app/services/tache.service";
-import {Tache} from "../../app/models/tache.model";
-import {NgClass, NgIf} from "@angular/common";
-
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { Tache } from "../../app/models/tache.model";
+import { Liste } from "../../app/models/liste.model"; // Assuming you have a Liste model
+import { TacheService } from "../../app/services/tache.service";
+import {NgClass, NgForOf, NgIf} from '@angular/common'; // Import NgFor and NgIf for use in the template
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
   standalone: true,
   imports: [
+    NgIf,
+    NgForOf,
     RouterLink,
     NgClass,
-    NgIf
-  ],
-  styleUrls: ['./home.component.css']
+    // For iterating over lists and tasks in your template
+  ]
 })
-
 export class HomeComponent implements OnInit {
+  listes: Liste[] = []; // Use the Liste model for type safety
+  taches: Tache[] = [];
+  selectedListeId: number | null = null;
 
-  liste: any;
-  tache: any;
+  constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) {}
 
-  selectedListId: number = 0;
-
-  constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) { }
-
-  ngOnInit() {
-    // Abonnez-vous aux changements des paramètres de l'URL
-    this.route.params.subscribe(
-      (params: Params) => {
-        if (params['listeId']) {
-          // S'il y a un paramètre 'listeId' dans l'URL, met à jour la liste sélectionnée
-          this.selectedListId = params['listeId'];
-          // Récupére les tâches de la liste sélectionnée
-          this.tacheService.GetTacheByListeId(params['listeId']).subscribe((tache: any) => {
-            this.tache = tache;
-          })
-        } else {
-          // S'il n'y a pas de paramètre 'listeId' dans l'URL, réinitialise la liste de tâches
-          this.tache = undefined;
-        }
+  ngOnInit(): void {
+    this.loadListes();
+    this.route.params.subscribe(params => {
+      if (params['listeId']) {
+        this.selectedListeId = +params['listeId'];
+        this.loadTaches(this.selectedListeId);
       }
-    )
-    // // Récupérez toutes les listes de tâches disponibles
-    // this.tacheService.getAllListe().subscribe((liste: any) => {
-    //   this.liste = liste;
-    // })
-
-    this.fetchLists();
+    });
   }
 
-  fetchLists() {
-    this.tacheService.getAllListe().subscribe((liste: any) => {
-      this.liste = liste;
+  loadListes(): void {
+    this.tacheService.getAllListes().subscribe(listes => {
+      this.listes = listes;
+    });
+  }
+
+  loadTaches(listeId: number): void {
+    this.tacheService.getAllTaches(listeId).subscribe(taches => {
+      this.taches = taches;
+    });
+  }
+
+  onDeleteListeClick(listeId: number): void {
+    this.tacheService.deleteListe(listeId).subscribe(() => {
+      // Assuming you might want to reset the selectedListeId if the current list is deleted
+      if (this.selectedListeId === listeId) {
+        this.selectedListeId = null;
+      }
+      this.loadListes();
+      this.router.navigate(['/']); // Navigate to the home page or default view
     });
   }
 
 
-  // Gestionnaire de clic pour supprimer une liste
-  onDeleteListClick() {
-    this.tacheService.deleteListe(this.selectedListId).subscribe((res: any) => {
-      // Redirigez l'utilisateur vers la page d'accueil après la suppression de la liste
-      this.router.navigate(['/home']);
-      console.log(res);
-      this.fetchLists();
+  onDeleteTacheClick(tacheId: number): void {
+    if (!this.selectedListeId) return; // Ensure there is a selected list
+    // The service method to delete a task does not return an Observable in your service definition
+    // In home.component.ts or wherever you're calling deleteTache
+    this.tacheService.deleteTache(tacheId, this.selectedListeId);
 
-    })
-  }
-  // Gestionnaire de clic pour marquer une tâche comme terminée ou non terminée
-  tacheClick(tache: Tache ) {
-    // Nous voulons définir l'état de la tâche comme terminée
-    this.tacheService.status(tache).subscribe(() => {
-      // La tâche a été définie comme terminée avec succès
-      tache.status = !tache.status;
-    })
+    this.loadTaches(this.selectedListeId);
   }
 
-  // Gestionnaire de clic pour supprimer une tâche
-  myDropdown: any;
-  onDeleteTaskClick(tacheId: number) {
-    this.tacheService.deleteTache(this.selectedListId, tacheId).subscribe((res: any) => {
-      // Filtrez la tâche supprimée du tableau de tâches
-      this.tache = this.tache.filter((val: Tache) => val.id !== tacheId);
-      console.log(res);
-    });
+  // Method to handle task click, if needed
+  tacheClick(tache: Tache): void {
+    // Implement logic for handling task click, e.g., marking as complete
+    // Remember to refresh the list of tasks after changing a task's status
   }
-
 }

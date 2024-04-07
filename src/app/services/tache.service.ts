@@ -1,64 +1,66 @@
 import { Injectable } from '@angular/core';
-// @ts-ignore
-import { WebRequestService } from './web-request.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Tache } from '../models/tache.model';
+import { Liste } from '../models/liste.model';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class TacheService {
 
-  constructor(private webReqService: WebRequestService) { }
+  private apiUrl = 'http://127.0.0.1:8000/api';
+  private listesSubject = new BehaviorSubject<Liste[]>([]);
+  private tachesSubject = new BehaviorSubject<Tache[]>([]);
 
+  constructor(private httpClient: HttpClient) {}
 
-  getAllListe() {
-    return this.webReqService.get('liste');
+  getListe(listeId: number): Observable<Liste> {
+    return this.httpClient.get<Liste>(`${this.apiUrl}/listes/${listeId}`);
+  }
+  updateTache(listeId: number, tacheId: number, titre: string, description?: string): Observable<any> {
+    const payload = { titre, description };
+    return this.httpClient.put(`${this.apiUrl}/listes/${listeId}/taches/${tacheId}`, payload);
   }
 
-  createListe(titre: string) {
-    return this.webReqService.post('liste', { titre });
+  updateListe(listeId: number, titre: string): Observable<Liste> {
+    return this.httpClient.put<Liste>(`${this.apiUrl}/listes/${listeId}`, { titre });
   }
 
-  GetListe(id: number) {
-    return this.webReqService.get(`liste/${id}`);
+  createListe(titre: string): Observable<Liste> {
+    return this.httpClient.post<Liste>(`${this.apiUrl}/listes`, { titre });
   }
 
-  GetListeId(id: number) {
-    return this.webReqService.get(`liste/${id}/tache`);
+  deleteListe(listeId: number): Observable<any> {
+    return this.httpClient.delete(`${this.apiUrl}/listes/${listeId}`);
   }
 
-  updateListe(id: number, titre: string) {
-    return this.webReqService.patch(`liste/${id}`, { titre });
+  createTache(titre: string, listeId: number): Observable<Tache> {
+    return this.httpClient.post<Tache>(`${this.apiUrl}/listes/${listeId}/taches`, { titre, status: false });
   }
 
-  updateTache(listeId: number, tacheId: number, titre: string) {
-    return this.webReqService.patch(`liste/${listeId}/tache/${tacheId}`, { titre });
+  deleteTache(tacheId: number, listeId: number): Observable<any> { // Note the additional listeId parameter
+    return this.httpClient.delete(`${this.apiUrl}/taches/${tacheId}`);
   }
 
-  getTache(listeId: number, tacheId: number) {
-    return this.webReqService.get(`liste/${listeId}/tache/${tacheId}`);
+  // Revised methods to return Observables directly for component subscription
+  refreshListes(): Observable<Liste[]> {
+    return this.httpClient.get<Liste[]>(`${this.apiUrl}/listes`);
   }
 
-  deleteTache(listeId: number, tacheId: number) {
-    return this.webReqService.delete(`liste/${listeId}/tache/${tacheId}`);
+  refreshTaches(listeId: number): Observable<Tache[]> {
+    return this.httpClient.get<Tache[]>(`${this.apiUrl}/listes/${listeId}/taches`);
   }
 
-  deleteListe(id: number) {
-    return this.webReqService.delete(`liste/${id}`);
+  // Assuming these methods are still needed for fetching all lists and tasks with BehaviorSubject
+
+  getAllListes(): Observable<Liste[]> {
+    this.refreshListes().subscribe(listes => this.listesSubject.next(listes));
+    return this.listesSubject.asObservable();
   }
 
-  GetTacheByListeId(listeId: number) {
-    return this.webReqService.get(`liste/${listeId}/tache`);
-  }
-
-  createTache(titre: string, listeId: number) {
-    return this.webReqService.post(`liste/${listeId}/tache`, { titre });
-  }
-
-  status(tache: Tache) {
-    return this.webReqService.patch(`liste/${tache.liste.id}/tache/${tache.id}`, {
-      status: !tache.status
-    });
+  getAllTaches(listeId: number): Observable<Tache[]> {
+    this.refreshTaches(listeId).subscribe(taches => this.tachesSubject.next(taches));
+    return this.tachesSubject.asObservable();
   }
 }

@@ -10,8 +10,9 @@ import {FormsModule} from "@angular/forms";
     FormsModule
   ],
   templateUrl: './edit-list.component.html',
-  styleUrl: './edit-list.component.css'
+  styleUrls: ['./edit-list.component.css'] // Corrected from 'styleUrl' to 'styleUrls'
 })
+
 export class EditListComponent {
   constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) { }
   listeId: number = 0;
@@ -29,7 +30,7 @@ export class EditListComponent {
 
   fetchOriginalListData(listeId: number) {
 
-    this.tacheService.GetListe(listeId).subscribe(
+    this.tacheService.getListe(listeId).subscribe(
       (listeData: any) => {
         this.listeTitre = listeData.titre;
       },

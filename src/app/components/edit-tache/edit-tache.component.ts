@@ -32,7 +32,7 @@ export class EditTacheComponent {
   }
 
   fetchOriginalListData(listeId: number, tacheId: number) {
-    this.tacheService.getTache(listeId,tacheId ).subscribe(
+    this.tacheService.getAllTaches(listeId ).subscribe(
       (tacheData: any) => {
         this.tacheTitre = tacheData.titre;
       },
