@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import {TacheService} from "../../services/tache.service";
-import {ActivatedRoute, Params, Router} from "@angular/router";
-import {FormsModule} from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { TacheService } from "../../services/tache.service";
+import { ActivatedRoute, Params, Router } from "@angular/router";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: 'app-edit-list',
@@ -10,41 +10,37 @@ import {FormsModule} from "@angular/forms";
     FormsModule
   ],
   templateUrl: './edit-list.component.html',
-  styleUrls: ['./edit-list.component.css'] // Corrected from 'styleUrl' to 'styleUrls'
+  styleUrls: ['./edit-list.component.css']
 })
-
-export class EditListComponent {
-  constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) { }
+export class EditListComponent implements OnInit {
   listeId: number = 0;
   listeTitre: string = '';
+
+  constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.route.params.subscribe(
       (params: Params) => {
         this.listeId = params['listeId'];
-        console.log(params['listeId']);
-        // Récupérez les données d'origine de la liste
+        // Fetch the original data of the list
         this.fetchOriginalListData(this.listeId);
       });
   }
 
   fetchOriginalListData(listeId: number) {
-
-    this.tacheService.getListe(listeId).subscribe(
-      (listeData: any) => {
-        this.listeTitre = listeData.titre;
-      },
-      (error: any) => {
-        console.error('Erreur lors de la récupération des données', error);
-      }
-    );
+    // Directly assigning the title from the service's local state
+    let liste = this.tacheService.getAllListes().find(l => l.id === listeId);
+    if (liste) {
+      this.listeTitre = liste.titre;
+    } else {
+      console.error('Liste not found');
+    }
   }
 
   updateList() {
     const titre = this.listeTitre;
-    this.tacheService.updateListe(this.listeId, titre).subscribe(( )=> {
-      this.router.navigate([ '/liste', this.listeId]);
-    })
+    // Calling the service to update the list and then navigating back to the list view
+    this.tacheService.updateListe(this.listeId, titre);
+    this.router.navigate(['/liste', this.listeId]);
   }
 }
-

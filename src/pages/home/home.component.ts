@@ -1,29 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Tache } from "../../app/models/tache.model";
-import { Liste } from "../../app/models/liste.model"; // Assuming you have a Liste model
+import { Liste } from "../../app/models/liste.model";
 import { TacheService } from "../../app/services/tache.service";
-import {NgClass, NgForOf, NgIf} from '@angular/common'; // Import NgFor and NgIf for use in the template
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   standalone: true,
-  imports: [
-    NgIf,
-    NgForOf,
-    RouterLink,
-    NgClass,
-    // For iterating over lists and tasks in your template
-  ]
+  imports: [NgIf, NgForOf, RouterLink, NgClass]
 })
 export class HomeComponent implements OnInit {
-  listes: Liste[] = []; // Use the Liste model for type safety
+  listes: Liste[] = [];
   taches: Tache[] = [];
   selectedListeId: number | null = null;
 
-  constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private tacheService: TacheService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadListes();
@@ -36,41 +34,34 @@ export class HomeComponent implements OnInit {
   }
 
   loadListes(): void {
-    this.tacheService.getAllListes().subscribe(listes => {
-      this.listes = listes;
-    });
+    // Directly assigning the array from the service
+    this.listes = this.tacheService.getAllListes();
   }
 
   loadTaches(listeId: number): void {
-    this.tacheService.getAllTaches(listeId).subscribe(taches => {
-      this.taches = taches;
-    });
+    // Directly assigning the array from the service
+    this.taches = this.tacheService.getAllTaches(listeId);
   }
 
   onDeleteListeClick(listeId: number): void {
-    this.tacheService.deleteListe(listeId).subscribe(() => {
-      // Assuming you might want to reset the selectedListeId if the current list is deleted
-      if (this.selectedListeId === listeId) {
-        this.selectedListeId = null;
-      }
-      this.loadListes();
-      this.router.navigate(['/']); // Navigate to the home page or default view
-    });
+    this.tacheService.deleteListe(listeId);
+    if (this.selectedListeId === listeId) {
+      this.selectedListeId = null;
+      this.router.navigate(['/']);
+    }
+    // Reloading the listes to reflect the changes
+    this.loadListes();
   }
 
-
   onDeleteTacheClick(tacheId: number): void {
-    if (!this.selectedListeId) return; // Ensure there is a selected list
-    // The service method to delete a task does not return an Observable in your service definition
-    // In home.component.ts or wherever you're calling deleteTache
+    if (!this.selectedListeId) return;
     this.tacheService.deleteTache(tacheId, this.selectedListeId);
-
+    // Reloading the taches to reflect the changes
     this.loadTaches(this.selectedListeId);
   }
 
-  // Method to handle task click, if needed
   tacheClick(tache: Tache): void {
-    // Implement logic for handling task click, e.g., marking as complete
-    // Remember to refresh the list of tasks after changing a task's status
+    // Implement logic for handling task click, if needed
+    // Refreshing the list of tasks might be necessary after making changes
   }
 }
