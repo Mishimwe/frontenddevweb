@@ -19,6 +19,8 @@ export class TacheService {
   private refreshListes() {
     this.httpClient.get<Liste[]>(`api/listes`).subscribe((listes: Liste[]) => {
       this.listes = listes;
+    }, error => {
+      console.error('Error fetching listes:', error);
     });
   }
 

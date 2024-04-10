@@ -1,15 +1,22 @@
-import { Tache } from './tache.model';
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import {TacheService} from "../services/tache.service";
 
-describe('Tache', () => {
-  it('should create an instance of Tache', () => {
-    const testTache: Tache = {
-      id: 1,
-      liste: {
-        id: 1
-      },
-      titre: 'Test Tache',
-      status: false
-    };
-    expect(testTache).toBeTruthy();
+
+describe('TacheService', () => {
+  let service: TacheService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule], // Import HttpClientTestingModule
+      providers: [TacheService]
+    });
+    service = TestBed.inject(TacheService);
   });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  // ... your other tests ...
 });
