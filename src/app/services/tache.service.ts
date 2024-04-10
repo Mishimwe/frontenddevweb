@@ -8,7 +8,7 @@ import { Liste } from '../models/liste.model';
 })
 export class TacheService {
 
-  private apiUrl = 'http://127.0.0.1:8080/api';
+  //private apiUrl = 'http://127.0.0.1:8080/api';
   private listes: Liste[] = [];
   private taches: Tache[] = [];
 
@@ -17,13 +17,13 @@ export class TacheService {
   }
 
   private refreshListes() {
-    this.httpClient.get<Liste[]>(`${this.apiUrl}/listes`).subscribe((listes: Liste[]) => {
+    this.httpClient.get<Liste[]>(`api/listes`).subscribe((listes: Liste[]) => {
       this.listes = listes;
     });
   }
 
   private refreshTaches(listeId: number) {
-    this.httpClient.get<Tache[]>(`${this.apiUrl}/listes/${listeId}/taches`).subscribe((taches: Tache[]) => {
+    this.httpClient.get<Tache[]>(`api/listes/${listeId}/taches`).subscribe((taches: Tache[]) => {
       this.taches = taches;
     });
   }
@@ -38,38 +38,38 @@ export class TacheService {
   }
 
   createListe(titre: string) {
-    this.httpClient.post<Liste>(`${this.apiUrl}/listes`, { titre }).subscribe(() => {
+    this.httpClient.post<Liste>(`api/listes`, { titre }).subscribe(() => {
       this.refreshListes();
     });
   }
 
   createTache(titre: string, listeId: number) {
-    this.httpClient.post<Tache>(`${this.apiUrl}/listes/${listeId}/taches`, { titre, status: false }).subscribe(() => {
+    this.httpClient.post<Tache>(`api/listes/${listeId}/taches`, { titre, status: false }).subscribe(() => {
       this.refreshTaches(listeId);
     });
   }
 
   updateListe(listeId: number, titre: string) {
-    this.httpClient.put<Liste>(`${this.apiUrl}/listes/${listeId}`, { titre }).subscribe(() => {
+    this.httpClient.put<Liste>(`api/listes/${listeId}`, { titre }).subscribe(() => {
       this.refreshListes();
     });
   }
 
   updateTache(listeId: number, tacheId: number, titre: string, description?: string) {
     const payload = { titre, description };
-    this.httpClient.put(`${this.apiUrl}/listes/${listeId}/taches/${tacheId}`, payload).subscribe(() => {
+    this.httpClient.put(`api/listes/${listeId}/taches/${tacheId}`, payload).subscribe(() => {
       this.refreshTaches(listeId);
     });
   }
 
   deleteListe(listeId: number) {
-    this.httpClient.delete(`${this.apiUrl}/listes/${listeId}`).subscribe(() => {
+    this.httpClient.delete(`api/listes/${listeId}`).subscribe(() => {
       this.refreshListes();
     });
   }
 
   deleteTache(tacheId: number, listeId: number) {
-    this.httpClient.delete(`${this.apiUrl}/taches/${tacheId}`).subscribe(() => {
+    this.httpClient.delete(`api/taches/${tacheId}`).subscribe(() => {
       this.refreshTaches(listeId);
     });
   }
