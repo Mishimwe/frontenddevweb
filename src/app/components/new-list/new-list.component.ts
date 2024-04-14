@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from "@angular/router";
 import { TacheService } from "../../services/tache.service";
+import {Liste} from "../../models/liste.model";
 
 @Component({
   selector: 'app-new-list',
@@ -11,12 +12,26 @@ import { TacheService } from "../../services/tache.service";
   styleUrls: ['./new-list.component.css']
 })
 export class NewListComponent {
-  titre: string = ''; // Added to bind with the input in your form
+  titre: string = '';
 
   constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) { }
 
   createNewList(value: string) {
-    this.tacheService.createListe(this.titre);
+    if (!this.titre.trim()) {
 
+      return;
+    }
+
+    this.tacheService.createListe(this.titre).subscribe(
+      (liste: Liste) => {
+        // Assuming the backend returns the created object which includes its id
+        console.log(liste);
+        // Navigate to the newly created list
+        this.router.navigate(['/liste', liste.id]);
+      },
+      (error) => {
+        console.error('Failed to create the list', error);
+      }
+    );
   }
 }

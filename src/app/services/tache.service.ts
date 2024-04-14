@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Tache } from '../models/tache.model';
 import { Liste } from '../models/liste.model';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -39,11 +40,7 @@ export class TacheService {
     return this.taches;
   }
 
-  createListe(titre: string) {
-    this.httpClient.post<Liste>(`api/listes`, { titre }).subscribe(() => {
-      this.refreshListes();
-    });
-  }
+
 
   createTache(titre: string, listeId: number) {
     this.httpClient.post<Tache>(`api/listes/${listeId}/taches`, { titre, status: false }).subscribe(() => {
@@ -68,6 +65,9 @@ export class TacheService {
     this.httpClient.delete(`api/listes/${listeId}`).subscribe(() => {
       this.refreshListes();
     });
+  }
+  createListe(titre: string): Observable<Liste> {
+    return this.httpClient.post<Liste>(`api/listes`, { titre });
   }
 
   deleteTache(tacheId: number, listeId: number) {
