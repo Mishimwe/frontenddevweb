@@ -34,9 +34,16 @@ export class HomeComponent implements OnInit {
   }
 
   loadListes(): void {
-    // Directly assigning the array from the service
-    this.listes = this.tacheService.getAllListes();
+    this.tacheService.getAllListes().subscribe(
+      (listes: Liste[]) => {
+        this.listes = listes;
+      },
+      error => {
+        console.error('Error fetching listes:', error);
+      }
+    );
   }
+
 
   loadTaches(listeId: number): void {
     // Directly assigning the array from the service
@@ -61,7 +68,6 @@ export class HomeComponent implements OnInit {
   }
 
   tacheClick(tache: Tache): void {
-    // Implement logic for handling task click, if needed
-    // Refreshing the list of tasks might be necessary after making changes
+
   }
 }

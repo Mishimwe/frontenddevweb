@@ -1,9 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+
 import { APP_INITIALIZER, NgModule } from "@angular/core";
-import { AppComponent } from "./app.component";
-import {list} from "postcss";
+import {KeycloakAngularModule} from "keycloak-angular";
+
 
 
 @NgModule({
@@ -13,13 +13,14 @@ import {list} from "postcss";
 
   ],
   imports: [
-    // Add your other modules here
-    BrowserModule, // Ensure BrowserModule is imported
-    HttpClientModule, // Import HttpClientModule here
+
+    BrowserModule,
+    HttpClientModule,
     KeycloakAngularModule,
   ],
   providers: [
   ],
 
 })
+
 export class AppModule {}

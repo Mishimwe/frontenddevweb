@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TacheService } from '../../services/tache.service';
 import { Tache } from '../../models/tache.model';
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-nouvelles-tache',
   standalone: true,
-  imports: [],
+  imports: [
+    FormsModule
+  ],
   templateUrl: './nouvelles-tache.component.html',
   styleUrls: ['./nouvelles-tache.component.css'] // Corrected from 'styleUrl' to 'styleUrls'
 })
@@ -23,11 +26,26 @@ export class NouvellesTacheComponent implements OnInit {
       }
     )
   }
-
-  createNouvellesTache(value: string) {
-    this.tacheService.createTache(this.titre, this.listeId); // Assuming createTache will update the internal state of taches in the service
-    // After creating the new task, you can navigate back to the list of tasks
-    // The below navigate method assumes you want to go up one level in your route hierarchy
-    this.router.navigate(['../'], { relativeTo: this.route });
+  taskTitle: string = '';
+  createNouvellesTache() {
+    console.log(this.taskTitle);
+    if (this.taskTitle.trim()) {
+      this.tacheService.createTache(this.taskTitle, this.listeId).subscribe(
+        (tache: Tache) => {
+          // Task was created successfully
+          console.log('Created Task:', tache);
+          // Navigate to your desired route
+          this.router.navigate(['../'], { relativeTo: this.route });
+        },
+        (error) => {
+          // There was an error creating the task
+          console.error('Error creating task:', error);
+        }
+      );
+    } else {
+      console.error('Task title is empty');
+    }
   }
+
+
 }

@@ -5,10 +5,12 @@ import {EditListComponent} from "./components/edit-list/edit-list.component";
 import {EditTacheComponent} from "./components/edit-tache/edit-tache.component";
 import {HomeComponent} from "../pages/home/home.component";
 import {NouvellesTacheComponent} from "./components/nouvelles-tache/nouvelles-tache.component";
+import {LoginComponent} from "../pages/login/login.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'new-list', component: NewListComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'edit-list/:listeId', component: EditListComponent },
   { path: 'liste/:listeId/edit-task/:tacheId', component: EditTacheComponent },
   { path: 'home', component: HomeComponent },

@@ -16,17 +16,14 @@ export class NewListComponent {
 
   constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) { }
 
-  createNewList(value: string) {
+  createNewList() {
     if (!this.titre.trim()) {
-
       return;
     }
 
     this.tacheService.createListe(this.titre).subscribe(
       (liste: Liste) => {
-        // Assuming the backend returns the created object which includes its id
         console.log(liste);
-        // Navigate to the newly created list
         this.router.navigate(['/liste', liste.id]);
       },
       (error) => {
@@ -34,4 +31,5 @@ export class NewListComponent {
       }
     );
   }
+
 }

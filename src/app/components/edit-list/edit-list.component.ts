@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TacheService } from "../../services/tache.service";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
+import {Liste} from "../../models/liste.model";
 
 @Component({
   selector: 'app-edit-list',
@@ -27,15 +28,24 @@ export class EditListComponent implements OnInit {
       });
   }
 
-  fetchOriginalListData(listeId: number) {
-    // Directly assigning the title from the service's local state
-    let liste = this.tacheService.getAllListes().find(l => l.id === listeId);
-    if (liste) {
-      this.listeTitre = liste.titre;
-    } else {
-      console.error('Liste not found');
-    }
+  fetchOriginalListData(listeId: number): void {
+    this.tacheService.getAllListes().subscribe(
+      (listes: Liste[]) => {
+        const liste = listes.find(l => l.id === listeId);
+        if (liste) {
+          this.listeTitre = liste.titre;
+        } else {
+          console.error('Liste not found');
+
+          this.router.navigate(['']);
+        }
+      },
+      error => {
+        console.error('Error fetching listes:', error);
+      }
+    );
   }
+
 
   updateList() {
     const titre = this.listeTitre;

@@ -31,22 +31,20 @@ export class TacheService {
     });
   }
 
-  getAllListes() {
-    return this.listes;
+  getAllListes(): Observable<Liste[]> {
+    return this.httpClient.get<Liste[]>(`api/listes`);
   }
+
 
   getAllTaches(listeId: number) {
     this.refreshTaches(listeId);
     return this.taches;
   }
 
-
-
-  createTache(titre: string, listeId: number) {
-    this.httpClient.post<Tache>(`api/listes/${listeId}/taches`, { titre, status: false }).subscribe(() => {
-      this.refreshTaches(listeId);
-    });
+  createTache(titre: string, listeId: number): Observable<Tache> {
+    return this.httpClient.post<Tache>(`api/listes/${listeId}/taches`, { titre});
   }
+
 
   updateListe(listeId: number, titre: string) {
     this.httpClient.put<Liste>(`api/listes/${listeId}`, { titre }).subscribe(() => {
