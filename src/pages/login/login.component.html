@@ -1,0 +1,36 @@
+<div class="flex justify-center items-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg">
+
+    <h1 class="text-2xl font-bold mb-6">Connexion</h1>
+
+    <form>
+      <div class="mb-4">
+        <div class="input-group flex items-center border p-2 rounded">
+          <span class="text-gray-500">
+            <i class="fas fa-envelope"></i>
+          </span>
+          <input type="email" name="username"  [(ngModel)]="username" placeholder="username" class="ml-2 p-2 flex-1">
+        </div>
+      </div>
+      <div class="mb-4">
+        <div class="input-group flex items-center border p-2 rounded">
+          <span class="text-gray-500">
+            <i class="fas fa-lock"></i>
+          </span>
+          <input type="password" name="password" [(ngModel)]="password" placeholder="Mot de passe" class="ml-2 p-2 flex-1">
+        </div>
+      </div>
+      <div class="flex justify-end">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" (click)="onLoginButtonClick()">Connexion</button>
+      </div>
+    </form>
+    <br>
+
+    <p class="text-gray-600">
+      Vous n'avez pas de compte ? <a href="/register" class="text-blue-500 hover:underline">S'inscrire</a>
+      <br>ou<br>
+      - email : <strong>demo&#64;demo.com</strong> <br>- mot de passe : <strong>password</strong>
+    </p>
+
+  </div>
+</div>
