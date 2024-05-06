@@ -1,8 +1,8 @@
 export interface Tache {
-  id: number;
-  liste: {
-    id: number;
-  };
+  id?: number;
+  listeId?: number;
   titre: string;
-  status: boolean;
+  description?: string;
+  dueDate?: string;
+  status?: boolean;
 }

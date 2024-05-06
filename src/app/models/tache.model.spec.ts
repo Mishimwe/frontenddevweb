@@ -8,7 +8,7 @@ describe('TacheService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule], // Import HttpClientTestingModule
+      imports: [HttpClientTestingModule],
       providers: [TacheService]
     });
     service = TestBed.inject(TacheService);
@@ -18,5 +18,4 @@ describe('TacheService', () => {
     expect(service).toBeTruthy();
   });
 
-  // ... your other tests ...
 });

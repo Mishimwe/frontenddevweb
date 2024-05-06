@@ -1,4 +1,8 @@
 export interface Liste {
-  id: number;
+  id?: number;
   titre: string;
+  startDate: string;
+  endDate: string;
+  subtasks?: Liste[];
 }
+

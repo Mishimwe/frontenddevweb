@@ -1,56 +1,57 @@
 <div class="flex justify-center p-4">
-  <div class="w-full max-w-4xl flex">
-
-    <!-- Sidebar for Lists -->
-    <div class="w-64 bg-white p-5 shadow mr-4 rounded">
+  <div class="w-full max-w-4xl flex flex-wrap md:flex-nowrap">
+    <div class="flex-1 bg-white p-5 shadow mr-4 rounded">
       <h1 class="text-2xl font-bold mb-4">Listes</h1>
       <div class="space-y-2">
-        <a *ngFor="let list of listes" [routerLink]="['/liste', list.id]"
-           class="flex justify-between items-center p-2 hover:bg-gray-100 rounded cursor-pointer">
-          <span>{{ list.titre }}</span>
-          <span class="flex space-x-1">
-            <a [routerLink]="['/edit-list', list.id]" class="text-blue-500 hover:text-blue-600">
-              <i class="fas fa-edit"></i>
-            </a>
-            <button (click)="onDeleteListeClick(list.id)" class="text-red-500 hover:text-red-600">
-              <i class="fas fa-trash"></i>
-            </button>
-          </span>
-        </a>
+        <div *ngFor="let list of listes" class="p-2 hover:bg-gray-100 rounded cursor-pointer">
+          <div (click)="list.id ? toggleSubtasks(list.id) : null" class="flex justify-between items-center">
+            <span>{{ list.titre }}</span>
+            <span class="flex space-x-1">
+              <a *ngIf="list.id" [routerLink]="['/edit-list', list.id]" aria-label="Edit list" class="text-blue-500 hover:text-blue-600">
+                <i class="fas fa-edit"></i>
+              </a>
+              <button *ngIf="list.id" (click)="onDeleteListeClick(list.id); $event.stopPropagation()" aria-label="Delete list" class="text-red-500 hover:text-red-600">
+                <i class="fas fa-trash"></i>
+              </button>
+            </span>
+          </div>
+          <div *ngIf="list.id && visibleSubtasks[list.id]" class="pl-4">
+            <ul>
+              <li *ngFor="let subtask of list.subtasks">
+                {{ subtask.titre }} - From {{ subtask.startDate | date }} to {{ subtask.endDate | date }}
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-
-      <button routerLink="/new-list" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center w-full justify-center">
-        <i class="fas fa-plus mr-2"></i> Nouvelle liste
+      <button routerLink="/new-list" class="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+        <i class class="fas fa-plus mr-2"></i> Nouvelle liste
       </button>
     </div>
-
-    <!-- Task List Container -->
-    <div class="flex-grow bg-gray-100 p-5 rounded shadow">
+    <div class="flex-1 bg-gray-100 p-5 rounded shadow">
       <h1 class="text-xl font-semibold mb-4">Tâches</h1>
-
-      <div *ngIf="taches.length > 0">
+      <div *ngIf="taches && taches.length > 0">
         <div *ngFor="let tach of taches" class="p-4 mb-2 bg-white rounded hover:shadow-md">
           <div class="flex justify-between items-center">
             <p class="text-lg font-medium">{{ tach.titre }}</p>
             <div class="flex space-x-2">
-              <a [routerLink]="['/liste', selectedListeId, 'edit-task', tach.id]" class="text-blue-500 hover:text-blue-600">
+              <a *ngIf="tach.id && selectedListeId" [routerLink]="['/liste', selectedListeId, 'edit-task', tach.id]" aria-label="Edit task" class="text-blue-500 hover:text-blue-600">
                 <i class="fas fa-edit"></i>
               </a>
-              <button (click)="onDeleteTacheClick(tach.id)" class="text-red-500 hover:text-red-600">
+              <button *ngIf="tach.id" (click)="onDeleteTacheClick(tach.id)" aria-label="Delete task" class="text-red-500 hover:text-red-600">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
           </div>
         </div>
       </div>
-
-      <div *ngIf="taches.length === 0" class="text-center text-gray-600">
+      <div *ngIf="!taches || taches.length === 0" class="text-center text-gray-600">
         Aucune tâche trouvée. Ajoutez une nouvelle tâche.
       </div>
-
-      <a routerLink="./nouvelles-tache" class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center w-full">
+      <a routerLink="./nouvelles-tache" class="mt-5 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full flex items-center justify-center">
         <i class="fas fa-plus mr-2"></i> Nouvelle tâche
       </a>
     </div>
+
   </div>
 </div>

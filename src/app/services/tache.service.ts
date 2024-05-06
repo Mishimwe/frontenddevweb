@@ -1,76 +1,54 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Tache } from '../models/tache.model';
+import { Observable } from 'rxjs';
 import { Liste } from '../models/liste.model';
-import {Observable} from "rxjs";
+import { Tache } from '../models/tache.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TacheService {
+  private baseUrl = 'api/listes'; // Set a base URL for consistency
 
-  //private apiUrl = 'http://127.0.0.1:8080/api';
-  private listes: Liste[] = [];
-  private taches: Tache[] = [];
-
-  constructor(private httpClient: HttpClient) {
-    this.refreshListes();
-  }
-
-  private refreshListes() {
-    this.httpClient.get<Liste[]>(`api/listes`).subscribe((listes: Liste[]) => {
-      this.listes = listes;
-    }, error => {
-      console.error('Error fetching listes:', error);
-    });
-  }
-
-  private refreshTaches(listeId: number) {
-    this.httpClient.get<Tache[]>(`api/listes/${listeId}/taches`).subscribe((taches: Tache[]) => {
-      this.taches = taches;
-    });
-  }
+  constructor(private httpClient: HttpClient) {}
 
   getAllListes(): Observable<Liste[]> {
-    return this.httpClient.get<Liste[]>(`api/listes`);
+    return this.httpClient.get<Liste[]>(`${this.baseUrl}`);
   }
 
-
-  getAllTaches(listeId: number) {
-    this.refreshTaches(listeId);
-    return this.taches;
+  getAllTaches(listeId: number): Observable<Tache[]> {
+    return this.httpClient.get<Tache[]>(`${this.baseUrl}/${listeId}/taches`);
   }
 
-  createTache(titre: string, listeId: number): Observable<Tache> {
-    return this.httpClient.post<Tache>(`api/listes/${listeId}/taches`, { titre});
+  createListe(liste: Liste): Observable<Liste> {
+    return this.httpClient.post<Liste>(`${this.baseUrl}`, liste);
   }
 
-
-  updateListe(listeId: number, titre: string) {
-    this.httpClient.put<Liste>(`api/listes/${listeId}`, { titre }).subscribe(() => {
-      this.refreshListes();
-    });
+  getListeById(listeId: number): Observable<Liste> {
+    return this.httpClient.get<Liste>(`${this.baseUrl}/${listeId}`);
   }
 
-  updateTache(listeId: number, tacheId: number, titre: string, description?: string) {
-    const payload = { titre, description };
-    this.httpClient.put(`api/listes/${listeId}/taches/${tacheId}`, payload).subscribe(() => {
-      this.refreshTaches(listeId);
-    });
+  updateListe(listeId: number, listeData: Partial<Liste>): Observable<any> {
+    return this.httpClient.put(`${this.baseUrl}/${listeId}`, listeData);
   }
 
-  deleteListe(listeId: number) {
-    this.httpClient.delete(`api/listes/${listeId}`).subscribe(() => {
-      this.refreshListes();
-    });
-  }
-  createListe(titre: string): Observable<Liste> {
-    return this.httpClient.post<Liste>(`api/listes`, { titre });
+  deleteListe(listeId: number): Observable<any> {
+    return this.httpClient.delete(`${this.baseUrl}/${listeId}`);
   }
 
-  deleteTache(tacheId: number, listeId: number) {
-    this.httpClient.delete(`api/taches/${tacheId}`).subscribe(() => {
-      this.refreshTaches(listeId);
-    });
+  createTache(tache: Tache, listeId: number): Observable<Tache> {
+    return this.httpClient.post<Tache>(`${this.baseUrl}/${listeId}/taches`, tache);
+  }
+
+  updateTache(listeId: number, tacheId: number, tacheData: Partial<Tache>): Observable<Tache> {
+    return this.httpClient.put<Tache>(`${this.baseUrl}/${listeId}/taches/${tacheId}`, tacheData);
+  }
+
+  getTache(listeId: number, tacheId: number): Observable<Tache> {
+    return this.httpClient.get<Tache>(`${this.baseUrl}/${listeId}/taches/${tacheId}`);
+  }
+
+  deleteTache(listeId: number, tacheId: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.baseUrl}/${listeId}/taches/${tacheId}`);
   }
 }

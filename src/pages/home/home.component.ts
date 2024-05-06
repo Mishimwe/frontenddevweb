@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Tache } from "../../app/models/tache.model";
-import { Liste } from "../../app/models/liste.model";
-import { TacheService } from "../../app/services/tache.service";
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import { TacheService } from '../../app/services/tache.service';
+import { Liste } from '../../app/models/liste.model';
+import { Tache } from '../../app/models/tache.model';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  standalone: true,
-  imports: [NgIf, NgForOf, RouterLink, NgClass]
+  imports: [CommonModule, NgForOf, NgIf, RouterLink],
+  standalone: true
 })
 export class HomeComponent implements OnInit {
   listes: Liste[] = [];
   taches: Tache[] = [];
   selectedListeId: number | null = null;
+  visibleSubtasks: { [key: number]: boolean } = {};
 
   constructor(
     private tacheService: TacheService,
@@ -25,49 +26,37 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadListes();
-    this.route.params.subscribe(params => {
-      if (params['listeId']) {
-        this.selectedListeId = +params['listeId'];
-        this.loadTaches(this.selectedListeId);
-      }
-    });
+    this.loadTaches();
   }
 
   loadListes(): void {
     this.tacheService.getAllListes().subscribe(
-      (listes: Liste[]) => {
-        this.listes = listes;
-      },
-      error => {
-        console.error('Error fetching listes:', error);
-      }
+      listes => this.listes = listes,
+      error => console.error('Erreur lors de la récupération des listes:', error)
     );
   }
 
-
-  loadTaches(listeId: number): void {
-    // Directly assigning the array from the service
-    this.taches = this.tacheService.getAllTaches(listeId);
-  }
-
-  onDeleteListeClick(listeId: number): void {
-    this.tacheService.deleteListe(listeId);
-    if (this.selectedListeId === listeId) {
-      this.selectedListeId = null;
-      this.router.navigate(['/']);
-    }
-    // Reloading the listes to reflect the changes
-    this.loadListes();
+  loadTaches(): void {
+    this.tacheService.getAllTaches(this.selectedListeId!).subscribe(
+      taches => this.taches = taches,
+      error => console.error('Erreur lors de la récupération des tâches:', error)
+    );
   }
 
   onDeleteTacheClick(tacheId: number): void {
-    if (!this.selectedListeId) return;
-    this.tacheService.deleteTache(tacheId, this.selectedListeId);
-    // Reloading the taches to reflect the changes
-    this.loadTaches(this.selectedListeId);
+    // Add logic to delete task and log appropriately
   }
 
-  tacheClick(tache: Tache): void {
+  toggleSubtasks(listeId: number): void {
+    this.visibleSubtasks[listeId] = !this.visibleSubtasks[listeId];
+  }
 
+  onDeleteListeClick(listeId: number): void {
+    this.tacheService.deleteListe(listeId).subscribe(() => {
+      this.router.navigate(['/']);
+      this.loadListes();
+    }, error => {
+      console.error('Échec de la suppression de la liste:', error);
+    });
   }
 }

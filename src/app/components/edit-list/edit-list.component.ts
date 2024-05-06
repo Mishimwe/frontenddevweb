@@ -1,56 +1,40 @@
 import { Component, OnInit } from '@angular/core';
-import { TacheService } from "../../services/tache.service";
-import { ActivatedRoute, Params, Router } from "@angular/router";
-import { FormsModule } from "@angular/forms";
-import {Liste} from "../../models/liste.model";
+import { ActivatedRoute, Router } from '@angular/router';
+import { TacheService } from '../../services/tache.service';
+import { Liste } from '../../models/liste.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-list',
+  selector: 'app-edit-liste',
+  templateUrl: './edit-liste.component.html',
+  styleUrls: ['./edit-liste.component.css'],
   standalone: true,
-  imports: [
-    FormsModule
-  ],
-  templateUrl: './edit-list.component.html',
-  styleUrls: ['./edit-list.component.css']
+  imports: [FormsModule]
 })
-export class EditListComponent implements OnInit {
+export class EditListeComponent implements OnInit {
   listeId: number = 0;
-  listeTitre: string = '';
+  liste: Liste = { id: 0, titre: '', startDate: '', endDate: '' };
 
   constructor(private tacheService: TacheService, private route: ActivatedRoute, private router: Router) { }
 
-  ngOnInit() {
-    this.route.params.subscribe(
-      (params: Params) => {
-        this.listeId = params['listeId'];
-        // Fetch the original data of the list
-        this.fetchOriginalListData(this.listeId);
-      });
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.listeId = +params['id'];
+      this.fetchListe();
+    });
   }
 
-  fetchOriginalListData(listeId: number): void {
-    this.tacheService.getAllListes().subscribe(
-      (listes: Liste[]) => {
-        const liste = listes.find(l => l.id === listeId);
-        if (liste) {
-          this.listeTitre = liste.titre;
-        } else {
-          console.error('Liste not found');
-
-          this.router.navigate(['']);
-        }
-      },
-      error => {
-        console.error('Error fetching listes:', error);
-      }
-    );
+  fetchListe(): void {
+    this.tacheService.getListeById(this.listeId).subscribe({
+      next: (liste) => this.liste = liste,
+      error: () => console.error('Erreur lors de la récupération de la liste')
+    });
   }
 
-
-  updateList() {
-    const titre = this.listeTitre;
-    // Calling the service to update the list and then navigating back to the list view
-    this.tacheService.updateListe(this.listeId, titre);
-    this.router.navigate(['/liste', this.listeId]);
+  updateListe(): void {
+    this.tacheService.updateListe(this.listeId, this.liste).subscribe({
+      next: () => this.router.navigate(['/listes']),
+      error: (error) => console.error('Erreur lors de la mise à jour de la liste:', error)
+    });
   }
 }

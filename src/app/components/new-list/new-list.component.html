@@ -1,15 +1,33 @@
 <div class="flex justify-center items-center h-screen">
   <div class="bg-white p-6 rounded-lg shadow-lg">
     <h1 class="text-2xl font-bold mb-4">
-      Créer une nouvelle liste
+      Créer une nouvelles taches
     </h1>
 
+    <!-- Input for list title -->
     <input [(ngModel)]="titre" class="form-control appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-3" type="text" placeholder="Entrez le nom de la liste...">
 
-    <div class="flex justify-end mt-3">
-      <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-l focus:outline-none focus:shadow-outline mr-2" routerLink="/">Annuler</button>
-      <button class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none focus:shadow-outline" (click)="createNewList()">Valider</button>
+    <!-- Input for start date -->
+    <input [(ngModel)]="startDate" class="form-control appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-3" type="date">
 
+    <!-- Input for end date -->
+    <input [(ngModel)]="endDate" class="form-control appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-3" type="date">
+
+    <!-- Subtasks section -->
+    <h2 class="text-xl font-bold my-4">Ajouter des sous-tâches</h2>
+    <input [(ngModel)]="subtaskTitle" class="form-control appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Titre de la sous-tâche">
+    <input [(ngModel)]="subtaskStartDate" class="form-control appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-3" type="date">
+    <input [(ngModel)]="subtaskEndDate" class="form-control appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-3" type="date">
+    <button class="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-3" (click)="addSubtask(subtaskTitle, subtaskStartDate, subtaskEndDate)">Ajouter sous-tâche</button>
+
+    <!-- List of subtasks -->
+    <div *ngFor="let subtask of subtasks" class="mt-2 p-2 bg-gray-100 rounded">
+      {{ subtask.titre }} ({{ subtask.startDate }} - {{ subtask.endDate }})
+    </div>
+
+    <div class="flex justify-end mt-3">
+      <button class="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-l focus:outline-none focus:shadow-outline mr-2" routerLink="/home">Annuler</button>
+      <button class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none focus:shadow-outline" (click)="createNewList()">Valider</button>
     </div>
   </div>
 </div>

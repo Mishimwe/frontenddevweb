@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditListComponent } from './edit-list.component';
+import { EditListeComponent } from './edit-list.component';
 
-describe('EditListComponent', () => {
-  let component: EditListComponent;
-  let fixture: ComponentFixture<EditListComponent>;
+describe('EditListeComponent', () => {
+  let component: EditListeComponent;
+  let fixture: ComponentFixture<EditListeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditListComponent]
+      imports: [EditListeComponent]
     })
     .compileComponents();
-    
-    fixture = TestBed.createComponent(EditListComponent);
+
+    fixture = TestBed.createComponent(EditListeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,3 +21,4 @@ describe('EditListComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

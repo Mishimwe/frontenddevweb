@@ -1,18 +1,29 @@
-<div class="centered-content">
-  <div class="modal-box">
-    <h1 class="title">
-      modifier votre liste
-    </h1>
-
-    <input  class="form-control bg-light mt-3"
-            [(ngModel)]="listeTitre"
-            type="text" >
-
-    <div class=" d-flex justify-content-end mt-3">
-      <button class="btn btn-danger me-2" routerLink="/">Annuler</button>
-      <button class="btn btn-valid text-white " (click)="updateList()">Valider</button>
+<!--<div class="edit-liste-container max-w-4xl mx-auto px-4 py-6">
+  <form (ngSubmit)="updateListe()" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div class="mb-4">
+      <label for="titre" class="block text-gray-700 text-sm font-bold mb-2">Title:</label>
+      <input type="text" id="titre" [(ngModel)]="liste.titre" name="titre" required
+             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
     </div>
-
-
-  </div>
+    <div class="mb-4">
+      <label for="startDate" class="block text-gray-700 text-sm font-bold mb-2">Start Date:</label>
+      <input type="date" id="startDate" [(ngModel)]="liste.startDate" name="startDate"
+             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    <div class="mb-4">
+      <label for="endDate" class="block text-gray-700 text-sm font-bold mb-2">End Date:</label>
+      <input type="date" id="endDate" [(ngModel)]="liste.endDate" name="endDate"
+             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+    </div>
+    <div class="flex items-center justify-between">
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Save Changes
+      </button>
+      <button type="button" (click)="router.navigate(['/listes'])"
+              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Cancel
+      </button>
+    </div>
+  </form>
 </div>
+!>
